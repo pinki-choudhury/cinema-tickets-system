@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>TicketServiceImpl.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">cinema-tickets</a> &gt; <a href="index.source.html" class="el_package">uk.gov.dwp.uc.pairtest</a> &gt; <span class="el_source">TicketServiceImpl.java</span></div><h1>TicketServiceImpl.java</h1><pre class="source lang-java linenums">package uk.gov.dwp.uc.pairtest;
+
+import thirdparty.paymentgateway.TicketPaymentService;
+import thirdparty.seatbooking.SeatReservationService;
+import uk.gov.dwp.uc.pairtest.domain.TicketTypeRequest;
+import uk.gov.dwp.uc.pairtest.exception.InvalidPurchaseException;
+
+import java.util.HashMap;
+import java.util.Map;
+
+public class TicketServiceImpl implements TicketService {
+    private final TicketPaymentService paymentService;
+    private final SeatReservationService reservationService;
+    private final Map&lt;TicketTypeRequest.Type, Integer&gt; ticketPrices;
+
+<span class="fc" id="L16">    public TicketServiceImpl(TicketPaymentService paymentService, SeatReservationService reservationService) {</span>
+<span class="fc" id="L17">        this.paymentService = paymentService;</span>
+<span class="fc" id="L18">        this.reservationService = reservationService;</span>
+<span class="fc" id="L19">        ticketPrices = new HashMap&lt;&gt;();</span>
+<span class="fc" id="L20">        ticketPrices.put(TicketTypeRequest.Type.ADULT, 25);</span>
+<span class="fc" id="L21">        ticketPrices.put(TicketTypeRequest.Type.CHILD, 15);</span>
+<span class="fc" id="L22">        ticketPrices.put(TicketTypeRequest.Type.INFANT, 0);</span>
+<span class="fc" id="L23">    }</span>
+    @Override
+    public void purchaseTickets(Long accountId, TicketTypeRequest... ticketTypeRequests) throws InvalidPurchaseException {
+<span class="fc" id="L26">        validatePurchaseRequest(accountId, ticketTypeRequests);</span>
+
+<span class="fc" id="L28">        int totalAmount = calculateTotalAmount(ticketTypeRequests);</span>
+<span class="fc" id="L29">        int totalSeats = calculateTotalSeats(ticketTypeRequests);</span>
+
+<span class="fc" id="L31">        paymentService.makePayment(accountId, totalAmount);</span>
+<span class="fc" id="L32">        reservationService.reserveSeat(accountId, totalSeats);</span>
+<span class="fc" id="L33">    }</span>
+
+    private void validatePurchaseRequest(Long accountId, TicketTypeRequest... ticketTypeRequests) throws InvalidPurchaseException {
+
+<span class="fc" id="L37">        int adultCount = 0;</span>
+<span class="fc" id="L38">        int totalTickets = 0;</span>
+
+        // All accounts with an id greater than zero are valid
+<span class="fc bfc" id="L41" title="All 2 branches covered.">        if (accountId &lt;= 0) {</span>
+<span class="fc" id="L42">            throw new InvalidPurchaseException(&quot;Invalid account ID.&quot;);</span>
+        }
+
+<span class="fc bfc" id="L45" title="All 2 branches covered.">        for (TicketTypeRequest ticketType : ticketTypeRequests) {</span>
+<span class="fc" id="L46">            totalTickets += ticketType.getNoOfTickets();</span>
+<span class="fc bfc" id="L47" title="All 2 branches covered.">            if (ticketType.getTicketType() == TicketTypeRequest.Type.ADULT) {</span>
+<span class="fc" id="L48">                adultCount += ticketType.getNoOfTickets();</span>
+            }
+        }
+<span class="fc bfc" id="L51" title="All 2 branches covered.">        if (totalTickets &gt; 25) {</span>
+<span class="fc" id="L52">            throw new InvalidPurchaseException(&quot;Cannot purchase more than 25 tickets at a time&quot;);</span>
+        }
+<span class="fc bfc" id="L54" title="All 2 branches covered.">        if (adultCount == 0) {</span>
+<span class="fc" id="L55">            throw new InvalidPurchaseException(&quot;At least one adult ticket must be purchased&quot;);</span>
+        }
+<span class="fc" id="L57">    }</span>
+
+    private int calculateTotalAmount(TicketTypeRequest... ticketTypeRequests) {
+<span class="fc" id="L60">        int totalAmount = 0;</span>
+<span class="fc bfc" id="L61" title="All 2 branches covered.">        for (TicketTypeRequest ticketType : ticketTypeRequests) {</span>
+            // Get the price from the map and multiply by the number of tickets
+<span class="fc" id="L63">            totalAmount += ticketPrices.get(ticketType.getTicketType()) * ticketType.getNoOfTickets();</span>
+        }
+<span class="fc" id="L65">        return totalAmount;</span>
+    }
+    private int calculateTotalSeats(TicketTypeRequest... ticketTypeRequests) {
+<span class="fc" id="L68">        int totalSeats = 0;</span>
+<span class="fc bfc" id="L69" title="All 2 branches covered.">        for (TicketTypeRequest ticketType : ticketTypeRequests) {</span>
+            //Infants are not allocated any seat
+<span class="fc bfc" id="L71" title="All 2 branches covered.">            if (ticketType.getTicketType() != TicketTypeRequest.Type.INFANT) {</span>
+<span class="fc" id="L72">                totalSeats += ticketType.getNoOfTickets();</span>
+            }
+        }
+<span class="fc" id="L75">        return totalSeats;</span>
+    }
+
+
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.10.202304240956</span></div></body></html>
