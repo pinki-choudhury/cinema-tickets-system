@@ -5,13 +5,13 @@
 This project is a Java-based implementation of a cinema ticket booking system. It allows users to purchase tickets for different types of attendees (Adult, Child, Infant) while adhering to specific business rules and constraints. The system calculates the total cost of tickets and reserves seats accordingly.
 
 **Key Features**
-* Purchase tickets for Adults, Children, and Infants.
+* Purchase tickets for Adults, Children, and Infants
 
-* Validate ticket purchase requests (e.g., maximum of 25 tickets, at least one adult ticket required).
+* Validate ticket purchase requests (e.g., maximum of 25 tickets, at least one adult ticket required)
 
-* Calculate the total cost of tickets.
+* Calculate the total cost of tickets
 
-* Reserve seats for valid ticket purchases.
+* Reserve seats for valid ticket purchases
 
 ## **Prerequisites**
 Before running the project, ensure you have the following installed:
@@ -46,11 +46,11 @@ To run the unit tests, use the following command:<br>
 ## **Dependencies**
 The project uses the following dependencies:
 
-* JUnit : For unit testing.
+* JUnit : For unit testing
 
-* Mockito: For mocking dependencies in tests.
+* Mockito: For mocking dependencies in tests
 
-* JaCoCo: For code coverage reporting.
+* JaCoCo: For code coverage reporting
 
 ### JaCoCo Configuration
 To generate a code coverage report using JaCoCo, add the following plugin to your `pom.xml`:
@@ -115,30 +115,30 @@ The system adheres to the following business rules:
 
 1. **Ticket Types:**
 
-    * Adult: £25 per ticket.
+    * Adult: £25 per ticket
   
-    * Child: £15 per ticket.
+    * Child: £15 per ticket
   
-    * Infant: £0 per ticket (no seat allocation).
+    * Infant: £0 per ticket (no seat allocation)
 
-4. **Maximum Tickets:** No more than 25 tickets can be purchased in a single transaction.
+4. **Maximum Tickets:** No more than 25 tickets can be purchased in a single transaction
 
-5. **Adult Requirement:** At least one adult ticket must be purchased for any child or infant tickets.
+5. **Adult Requirement:** At least one adult ticket must be purchased for any child or infant tickets
 
-6. **Seat Allocation:** Infants do not occupy a seat.
+6. **Seat Allocation:** Infants do not occupy a seat
 
 ## **Testing**
 The project includes unit tests to validate the functionality of the TicketServiceImpl class. You can run the tests using:<br>
 `mvn test`
 
 **Test Scenarios**
-* Valid ticket purchase requests.
+* Valid ticket purchase requests
 
-* Invalid account IDs.
+* Invalid account IDs
 
-* Requests exceeding the maximum ticket limit.
+* Requests exceeding the maximum ticket limit
 
-* Requests without an adult ticket.
+* Requests without an adult ticket
 
-* Mixed ticket type requests.
+* Mixed ticket type requests
 
