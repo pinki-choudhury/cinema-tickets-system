@@ -136,9 +136,9 @@ The project includes unit tests to validate the functionality of the TicketServi
 
 * Invalid account IDs
 
-* Requests exceeding the maximum ticket limit
+* Validate exceeding the maximum ticket limit
 
-* Requests without an adult ticket
+* Validate without an adult ticket
 
 * Calculate total seat allocation
 
