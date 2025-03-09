@@ -140,5 +140,6 @@ The project includes unit tests to validate the functionality of the TicketServi
 
 * Requests without an adult ticket
 
-* Mixed ticket type requests
+* Calculate total seat allocation
 
+* Calculate total ticket cost
