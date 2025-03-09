@@ -17,7 +17,9 @@ public class TicketServiceImpl implements TicketService {
     public TicketServiceImpl(TicketPaymentService paymentService, SeatReservationService reservationService) {
         this.paymentService = paymentService;
         this.reservationService = reservationService;
+
         ticketPrices = new HashMap<>();
+
         ticketPrices.put(TicketTypeRequest.Type.ADULT, 25);
         ticketPrices.put(TicketTypeRequest.Type.CHILD, 15);
         ticketPrices.put(TicketTypeRequest.Type.INFANT, 0);
@@ -36,9 +38,9 @@ public class TicketServiceImpl implements TicketService {
     }
     private void validateAccount(Long accountId) throws InvalidPurchaseException{
 
-        // All accounts with an id greater than zero are valid
+        // All accounts with an id not null and greater than zero are valid
         if (accountId == null || accountId <= 0) {
-            throw new InvalidPurchaseException("Invalid account Id.");
+            throw new InvalidPurchaseException("Invalid account Id");
         }
     }
     private void validatePurchaseRule(Long accountId, TicketTypeRequest... ticketTypeRequests) throws InvalidPurchaseException {
@@ -48,7 +50,7 @@ public class TicketServiceImpl implements TicketService {
 
         for (TicketTypeRequest ticketType : ticketTypeRequests) {
             if (ticketType.getNoOfTickets() <= 0) {
-                throw new InvalidPurchaseException("Ticket quantity must be greater than zero.");
+                throw new InvalidPurchaseException("Ticket quantity must be greater than zero");
             }
             totalTickets += ticketType.getNoOfTickets();
             if (ticketType.getTicketType() == TicketTypeRequest.Type.ADULT) {
@@ -56,7 +58,7 @@ public class TicketServiceImpl implements TicketService {
             }
         }
         if (totalTickets > MAX_TICKETS) {
-            throw new InvalidPurchaseException("Cannot purchase more than " + MAX_TICKETS + "tickets at a time");
+            throw new InvalidPurchaseException("Can't purchase more than " + MAX_TICKETS + " tickets at a time");
         }
         if (adultCount == 0) {
             throw new InvalidPurchaseException("At least one adult ticket must be purchased");
